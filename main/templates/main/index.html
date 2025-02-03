@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h1>URL Shortener</h1>
+
+<div class="row">
+    <p>{{ message }}</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-10">
+            <input class="form-control form-control-lg" type="text" placeholder="URL" aria-label=".form-control-lg example">
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary btn-lg">Go!</button>
+        </div>
+    </div>
+</form>
+
+{% endblock content %}
