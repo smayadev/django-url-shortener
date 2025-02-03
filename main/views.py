@@ -16,7 +16,13 @@ class IndexView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        src_path = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+        src_path = ''
+        while True:
+            tmp_path = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+            check = Paths.objects.get(src_path=tmp_path)
+            if not check:
+                src_path = tmp_path
+                break
         if form.is_valid():
             obj = form.save(commit=False)
             obj.src_path = src_path
