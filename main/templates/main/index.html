@@ -2,23 +2,27 @@
 {% block content %}
 <h1>URL Shortener</h1>
 
-<div class="col-md-10">
-    {% if messages %}
-    <div class="mb-2">
-    {% for message in messages %}
-      {% if message.tags == 'error' %}
-        <div class="alert alert-danger" role="alert">
-          {{ message|safe }}
+<div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        <div class="mb-2">
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="p-3">
+                <i class="fa-solid fa-triangle-exclamation" style="color: red;"></i>
+                <span style="color: red;"><strong>Error:</strong></span> {{ message|safe }}
+            </div>
+        {% endif %}
+        {% if message.tags == 'success' %}
+            <div class="p-3">
+                <i class="fa-solid fa-circle-check" style="color: green;"></i>
+                <span style="color: green;"><strong>Success!</strong></span> {{ message|safe }}
+            </div>
+        {% endif %}
+        {% endfor %}
         </div>
-      {% endif %}
-      {% if message.tags == 'success' %}
-        <div class="alert alert-success" role="alert">
-          {{ message|safe }}
-        </div>
-      {% endif %}
-    {% endfor %}
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 
 <div class="row">

@@ -32,13 +32,13 @@ class IndexView(TemplateView):
             short_url = f'{request.scheme}://{request.get_host()}/{src_path}'
             copy_button = format_html(
             '''
-            <a href="#" onclick="navigator.clipboard.writeText('{}')" title="Copy to Clipboard">
-                <i class="fas fa-copy" style="margin-right: 10px; color: #007bff; cursor: pointer;"></i>
+            <a href="#" onclick="navigator.clipboard.writeText('{}')" title="Copy URL to Clipboard">
+                <i class="fa-regular fa-clipboard" style="margin-right: 10px; color: #007bff; cursor: pointer;"></i>
             </a>
             ''',
             short_url
             )
-            messages.success(request, f'Success! Your shortened URL is <strong>{short_url}</strong> {copy_button}')
+            messages.success(request, f'Your shortened URL is <strong>{short_url}</strong> {copy_button}')
         else:
             messages.error(request, form.errors.get('dest_url', [''])[0])
         return HttpResponseRedirect(self.request.path_info)
