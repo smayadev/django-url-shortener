@@ -19,7 +19,7 @@ class IndexView(TemplateView):
         src_path = ''
         while True:
             tmp_path = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
-            check = Paths.objects.get(src_path=tmp_path)
+            check = Paths.objects.filter(src_path=tmp_path)
             if not check:
                 src_path = tmp_path
                 break
@@ -34,7 +34,8 @@ class IndexView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         data = {
-            'message': 'Enter the URL to shorten and click "Go!"'
+            'message': 'Enter the URL to shorten and click "Go!"',
+            'add_form': self.form_class
         }
         return render(request, self.template_name, data)
 
