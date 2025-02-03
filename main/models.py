@@ -8,6 +8,7 @@ class Paths(models.Model):
         validators=[URLValidator(schemes=['http', 'https'])],
         unique=True
     )
+    admin_added = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Path'
