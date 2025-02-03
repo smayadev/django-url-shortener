@@ -6,6 +6,7 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.utils.html import format_html
 from .models import Paths
 from .forms import PathsForm
 
@@ -28,7 +29,16 @@ class IndexView(TemplateView):
             obj = form.save(commit=False)
             obj.src_path = src_path
             obj.save()
-            messages.success(request, f'Success! Your shortened URL is {request.scheme}://{request.get_host()}/{src_path}')
+            short_url = f'{request.scheme}://{request.get_host()}/{src_path}'
+            copy_button = format_html(
+            '''
+            <a href="#" onclick="navigator.clipboard.writeText('{}')" title="Copy to Clipboard">
+                <i class="fas fa-copy" style="margin-right: 10px; color: #007bff; cursor: pointer;"></i>
+            </a>
+            ''',
+            short_url
+            )
+            messages.success(request, f'Success! Your shortened URL is <strong>{short_url}</strong> {copy_button}')
         else:
             messages.error(request, f'Add failed{form.errors}')
         return HttpResponseRedirect(self.request.path_info)
