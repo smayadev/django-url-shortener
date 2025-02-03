@@ -1,5 +1,6 @@
 import random
 import string
+from urllib.parse import urlparse
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404, redirect
@@ -27,7 +28,7 @@ class IndexView(TemplateView):
             obj = form.save(commit=False)
             obj.src_path = src_path
             obj.save()
-            messages.success(request, 'Added')
+            messages.success(request, f'Success! Your shortened URL is {request.scheme}://{request.get_host()}/{src_path}')
         else:
             messages.error(request, f'Add failed{form.errors}')
         return HttpResponseRedirect(self.request.path_info)
