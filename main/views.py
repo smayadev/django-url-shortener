@@ -40,7 +40,7 @@ class IndexView(TemplateView):
             )
             messages.success(request, f'Success! Your shortened URL is <strong>{short_url}</strong> {copy_button}')
         else:
-            messages.error(request, f'Add failed{form.errors}')
+            messages.error(request, form.errors.get('dest_url', [''])[0])
         return HttpResponseRedirect(self.request.path_info)
 
     def get(self, request, *args, **kwargs):
