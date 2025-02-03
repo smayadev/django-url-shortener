@@ -11,25 +11,6 @@
     <div class="container">
 
       <div class="row">
-
-        <div class="col-md-10">
-          {% if messages %}
-          <div class="mb-2">
-          {% for message in messages %}
-            {% if message.tags == 'error' %}
-              <div class="alert alert-danger" role="alert">
-                {{ message|safe }}
-              </div>
-            {% endif %}
-            {% if message.tags == 'success' %}
-              <div class="alert alert-success" role="alert">
-                {{ message|safe }}
-              </div>
-            {% endif %}
-          {% endfor %}
-          </div>
-          {% endif %}
-
           {% block content %}
           {% endblock %}
         </div>
