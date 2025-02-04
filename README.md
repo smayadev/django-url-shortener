@@ -20,13 +20,23 @@ Clone this repo into a directory where you would like to store the source files.
 
 Replace "giturl" with the actual git URL of this repo.
 
-#### 2. Install requirements
+#### 2. Launch the Redis Docker container
+
+This step assumes you have Docker and Docker Compose installed.
+
+Navigate into the `docker` folder in this repo and run:
+
+`docker-compose up -d`
+
+Use the `docker ps` command to check if the Redis container launched and is running without crashing.
+
+#### 3. Install requirements
 
 Navigate to the directory where you cloned the source. You should be at the same level as requirements.txt and manage.py. Use the following command to install any required python packages:
 
 `pip install -r requirements.txt`
 
-#### 3. Environment variables
+#### 4. Environment variables
 
 Copy .env.sample to .env and open the file. Make changes as necessary to configure database details, allowed hosts, debug mode, etc. 
 
@@ -37,19 +47,19 @@ from django.core.management.utils import get_random_secret_key
 get_random_secret_key()
 ```
 
-#### 4. Database migrations
+#### 5. Database migrations
 
 Use the following command to set up the database:
 
 `python manage.py migrate`
 
-#### 5. Create a superuser
+#### 6. Create a superuser
 
 Use the following command to create a superuser:
 
 `python manage.py createsuperuser`
 
-#### 6. Run tests
+#### 7. Run tests
 
 Use the following command to run tests:
 
@@ -57,7 +67,7 @@ Use the following command to run tests:
 
 The tests should all pass. Please file an issue if they don't.
 
-#### 7. Run application
+#### 8. Run application
 
 Use the following command to run the application on localhost:
 

@@ -78,6 +78,17 @@ WSGI_APPLICATION = 'url_shortener.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+CACHES = {
+    "default": {
+        "BACKEND": os.environ.get("CACHE_BACKEND"),
+        "LOCATION": os.environ.get("CACHE_LOCATION"),
+        "OPTIONS": {
+            "CLIENT_CLASS": os.environ.get("CACHE_CLIENT_CLASS"),
+            "TIMEOUT": os.environ.get("CACHE_TIMEOUT"),
+        }
+    }
+}
+
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get("DATABASE_ENGINE"),
