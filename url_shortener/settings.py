@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import sys
 import json
 from pathlib import Path
 from dotenv import load_dotenv
@@ -78,10 +79,12 @@ WSGI_APPLICATION = 'url_shortener.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+TESTING = any(arg in sys.argv for arg in ["test", "pytest"])
+
 CACHES = {
     "default": {
         "BACKEND": os.environ.get("CACHE_BACKEND"),
-        "LOCATION": os.environ.get("CACHE_LOCATION"),
+        "LOCATION": os.environ.get("TEST_CACHE_LOCATION") if TESTING else os.environ.get("CACHE_LOCATION"),
         "OPTIONS": {
             "CLIENT_CLASS": os.environ.get("CACHE_CLIENT_CLASS"),
             "TIMEOUT": os.environ.get("CACHE_TIMEOUT"),
