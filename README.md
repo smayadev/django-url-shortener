@@ -26,19 +26,30 @@ Navigate to the directory where you cloned the source. You should be at the same
 
 `pip install -r requirements.txt`
 
-#### 3. Database migrations
+#### 3. Environment variables
+
+Copy .env.sample to .env and open the file. Make changes as necessary to configure database details, allowed hosts, debug mode, etc. 
+
+To generate a secret key, run these commands from inside a python3 shell:
+
+```
+from django.core.management.utils import get_random_secret_key
+get_random_secret_key()
+```
+
+#### 4. Database migrations
 
 Use the following command to set up the database:
 
 `python manage.py migrate`
 
-#### 4. Create a superuser
+#### 5. Create a superuser
 
 Use the following command to create a superuser:
 
 `python manage.py createsuperuser`
 
-#### 5. Run tests
+#### 6. Run tests
 
 Use the following command to run tests:
 
@@ -46,7 +57,7 @@ Use the following command to run tests:
 
 The tests should all pass. Please file an issue if they don't.
 
-#### 6. Run application
+#### 7. Run application
 
 Use the following command to run the application on localhost:
 
