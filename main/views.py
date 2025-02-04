@@ -30,7 +30,11 @@ class IndexView(TemplateView):
             obj = form.save(commit=False)
             obj.src_path = src_path
             obj.save()
-            short_url = f'{request.scheme}://{request.get_host()}/{src_path}'
+            if settings.SITE_URL.endswith('/'):
+                site_url = settings.SITE_URL[:-1]
+            else:
+                site_url = settings.SITE_URL
+            short_url = f'{site_url}/{src_path}'
             copy_button = format_html(
             '''
             <a href="#" onclick="navigator.clipboard.writeText('{}')" title="Copy URL to Clipboard">
