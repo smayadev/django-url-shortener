@@ -25,6 +25,8 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 SITE_URL = os.environ.get("SITE_URL")
+if SITE_URL.endswith('/'):
+    SITE_URL = SITE_URL[:-1]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
@@ -131,9 +133,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_api_key.permissions.HasAPIKey",
-    ]
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "rest_framework_api_key.permissions.HasAPIKey",
+    # ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
 }
 
 

@@ -22,10 +22,7 @@ class IndexView(TemplateView):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.save()
-            if settings.SITE_URL.endswith('/'):
-                site_url = settings.SITE_URL[:-1]
-            else:
-                site_url = settings.SITE_URL
+            site_url = settings.SITE_URL
             short_url = f'{site_url}/{obj.src_path}'
             copy_button = format_html(
             '''
