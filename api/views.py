@@ -1,26 +1,43 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
 from main.models import Paths
 from .serializers import PathsSerializer
+from .permissions import HasUserAPIKey, HasAdminAPIKey
 
 
 class PathsViewSet(viewsets.ModelViewSet):
     """
-    A viewset for handling URL shortening and resolution.
+    Admin-only view to list and manage shortened URLs.
     """
     queryset = Paths.objects.all()
     serializer_class = PathsSerializer
+    permission_classes = [HasAdminAPIKey]
 
-    def create(self, request, *args, **kwargs):
-        """
-        Handle POST requests to shorten a URL
-        """
-        serializer = self.get_serializer(data=request.data)
+
+class ShortenURLViewSet(viewsets.ViewSet):
+    """
+    Allows users to shorten URLs
+    """
+    permission_classes = [HasUserAPIKey]
+
+    def create(self, request):
+        serializer = PathsSerializer(data=request.data)
         if serializer.is_valid():
             obj = serializer.save()
-            return Response(self.get_serializer(obj).data, status=status.HTTP_201_CREATED)
+            return Response(PathsSerializer(obj).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ResolveURLViewSet(viewsets.ViewSet):
+    """
+    Allows users to resolve a short URL.
+    """
+    permission_classes = [HasUserAPIKey]
+
+    def get_queryset(self):
+        return Paths.objects.all()
 
     def retrieve(self, request, pk=None):
         """
