@@ -1,3 +1,5 @@
+import random
+import string
 from django.db import models
 from django.core.validators import URLValidator
 from django.db.models.signals import post_delete, post_save
@@ -16,6 +18,18 @@ class Paths(models.Model):
         unique=True
     )
     admin_added = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        """
+        Auto-generate a unique src_path
+        """
+        if not self.src_path:
+            while True:
+                tmp_path = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+                if not Paths.objects.filter(src_path=tmp_path).exists():
+                    self.src_path = tmp_path
+                    break
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Path'

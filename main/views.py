@@ -19,22 +19,14 @@ class IndexView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        src_path = ''
-        while True:
-            tmp_path = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
-            check = Paths.objects.filter(src_path=tmp_path)
-            if not check:
-                src_path = tmp_path
-                break
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.src_path = src_path
             obj.save()
             if settings.SITE_URL.endswith('/'):
                 site_url = settings.SITE_URL[:-1]
             else:
                 site_url = settings.SITE_URL
-            short_url = f'{site_url}/{src_path}'
+            short_url = f'{site_url}/{obj.src_path}'
             copy_button = format_html(
             '''
             <a href="#" onclick="navigator.clipboard.writeText('{}')" title="Copy URL to Clipboard">
