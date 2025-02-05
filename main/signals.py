@@ -11,5 +11,8 @@ def delete_url_cache_on_delete(sender, instance, **kwargs):
     """
     Remove the cached URL path when deleted
     """
-    cache_key = f"url:{instance.src_path}"    
-    redis_client.delete(cache_key)
+    try:
+        cache_key = f"url:{instance.src_path}"    
+        redis_client.delete(cache_key)
+    except (redis.ConnectionError, redis.TimeoutError):
+        print('redis connection failed when deleting shortened URL') 

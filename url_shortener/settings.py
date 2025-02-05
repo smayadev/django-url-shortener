@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'rest_framework',
+    'rest_framework_api_key',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -81,18 +84,21 @@ WSGI_APPLICATION = 'url_shortener.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-TESTING = any(arg in sys.argv for arg in ["test", "pytest"])
+TESTING = any(arg in sys.argv for arg in ["test"])
 
-CACHES = {
-    "default": {
-        "BACKEND": os.environ.get("CACHE_BACKEND"),
-        "LOCATION": os.environ.get("TEST_CACHE_LOCATION") if TESTING else os.environ.get("CACHE_LOCATION"),
-        "OPTIONS": {
-            "CLIENT_CLASS": os.environ.get("CACHE_CLIENT_CLASS"),
-            "TIMEOUT": os.environ.get("CACHE_TIMEOUT"),
+try:
+    CACHES = {
+        "default": {
+            "BACKEND": os.environ.get("CACHE_BACKEND"),
+            "LOCATION": os.environ.get("TEST_CACHE_LOCATION") if TESTING else os.environ.get("CACHE_LOCATION"),
+            "OPTIONS": {
+                "CLIENT_CLASS": os.environ.get("CACHE_CLIENT_CLASS"),
+                "TIMEOUT": os.environ.get("CACHE_TIMEOUT"),
+            }
         }
     }
-}
+except:
+    print('cache is unavailable')
 
 DATABASES = {
     'default': {
@@ -123,6 +129,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_api_key.permissions.HasAPIKey",
+    ]
+}
 
 
 # Internationalization

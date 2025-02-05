@@ -59,14 +59,19 @@ class IndexView(TemplateView):
 redis_client = redis.StrictRedis.from_url(settings.CACHES['default']['LOCATION'], decode_responses=True)
 
 def redirect_to_dest(request, src_path):
-    cache_key = f'url:{src_path}'
 
-    cached_url = redis_client.get(cache_key)
-
-    if cached_url:
-        return redirect(cached_url)
-    
     short_url = get_object_or_404(Paths, src_path=src_path)
 
-    redis_client.setex(cache_key, 3600, short_url.dest_url)
+    try:
+        cache_key = f'url:{src_path}'
+
+        cached_url = redis_client.get(cache_key)
+
+        if cached_url:
+            return redirect(cached_url)
+        
+        redis_client.setex(cache_key, 3600, short_url.dest_url)
+    except (redis.ConnectionError, redis.TimeoutError):
+        print('redis connection failed when redirecting URL')
+
     return redirect(short_url.dest_url)
