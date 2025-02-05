@@ -23,7 +23,7 @@ class IndexView(TemplateView):
             obj = form.save(commit=False)
             obj.save()
             site_url = settings.SITE_URL
-            short_url = f'{site_url}/{obj.src_path}'
+            short_url = f'{site_url}/{obj.short_code}'
             copy_button = format_html(
             '''
             <a href="#" onclick="navigator.clipboard.writeText('{}')" title="Copy URL to Clipboard">
@@ -47,12 +47,12 @@ class IndexView(TemplateView):
 
 redis_client = redis.StrictRedis.from_url(settings.CACHES['default']['LOCATION'], decode_responses=True)
 
-def redirect_to_dest(request, src_path):
+def redirect_to_dest(request, short_code):
 
-    short_url = get_object_or_404(Paths, src_path=src_path)
+    short_url = get_object_or_404(Paths, short_code=short_code)
 
     try:
-        cache_key = f'url:{src_path}'
+        cache_key = f'url:{short_code}'
 
         cached_url = redis_client.get(cache_key)
 

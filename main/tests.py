@@ -14,8 +14,8 @@ class URLShortenerTests(TestCase):
         """
         self.valid_url = "https://www.example.com/page"
         self.invalid_url = "not_a_valid_url"
-        self.short_path = "abc1234"
-        self.path_entry = Paths.objects.create(src_path=self.short_path, dest_url=self.valid_url)
+        self.short_code = "abc1234"
+        self.path_entry = Paths.objects.create(short_code=self.short_code, dest_url=self.valid_url)
 
     def test_create_short_url(self):
         """
@@ -28,7 +28,7 @@ class URLShortenerTests(TestCase):
         """
         Test that accessing the shortened URL redirects correctly.
         """
-        response = self.client.get(reverse("redirect_to_dest", args=[self.short_path]))
+        response = self.client.get(reverse("redirect_to_dest", args=[self.short_code]))
         self.assertRedirects(response, self.valid_url, status_code=302, fetch_redirect_response=False)
 
 

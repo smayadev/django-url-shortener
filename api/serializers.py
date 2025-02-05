@@ -11,9 +11,9 @@ class PathsSerializer(serializers.ModelSerializer):
         Generates the full shortened URL using SITE_URL
         """
         site_url = settings.SITE_URL
-        return f"{site_url}/{obj.src_path}"
+        return f"{site_url}/{obj.short_code}"
 
     class Meta:
         model = Paths
-        fields = ['src_path', 'dest_url', 'short_url']
-        read_only_fields = ['src_path']
+        fields = ['short_code', 'dest_url', 'short_url']
+        read_only_fields = ['short_code']

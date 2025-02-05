@@ -5,7 +5,7 @@ from django.core.validators import URLValidator
 
 
 class Paths(models.Model):
-    src_path = models.CharField(max_length=255, unique=True)
+    short_code = models.CharField(max_length=255, unique=True)
     dest_url = models.CharField(
         max_length=255, 
         validators=[URLValidator(schemes=['http', 'https'])],
@@ -15,13 +15,13 @@ class Paths(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Auto-generate a unique src_path
+        Auto-generate a unique short_code
         """
-        if not self.src_path:
+        if not self.short_code:
             while True:
-                tmp_path = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
-                if not Paths.objects.filter(src_path=tmp_path).exists():
-                    self.src_path = tmp_path
+                tmp_code = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+                if not Paths.objects.filter(short_code=tmp_code).exists():
+                    self.short_code = tmp_code
                     break
         super().save(*args, **kwargs)
 
@@ -30,4 +30,4 @@ class Paths(models.Model):
         verbose_name_plural = 'Paths'
 
     def __str__(self):
-        return self.src_path
+        return self.short_code
