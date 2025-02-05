@@ -1,34 +1,32 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import permissions
 from main.models import Paths
 from .serializers import PathsSerializer
 
 
-class ResolveURLApiView(APIView):
+class PathsViewSet(viewsets.ModelViewSet):
     """
-    Resolve a short URL to its original destination
+    A viewset for handling URL shortening and resolution.
     """
+    queryset = Paths.objects.all()
+    serializer_class = PathsSerializer
 
-    def get(self, request, short_code, *args, **kwargs):
-        url_object = get_object_or_404(Paths, short_code=short_code)
-        return Response({"dest_url": url_object.dest_url}, status=status.HTTP_200_OK)
-
-
-class ShortenURLApiView(APIView):
-
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         """
-        Take a long URL and shorten it
+        Handle POST requests to shorten a URL
         """
-        data = {
-            'dest_url': request.data.get('dest_url')
-        }
-        serializer = PathsSerializer(data=data)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             obj = serializer.save()
-            return Response(PathsSerializer(obj).data, status=status.HTTP_201_CREATED)
-
+            return Response(self.get_serializer(obj).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        """
+        Handle GET requests to resolve a short URL
+        """
+        obj = self.get_queryset().filter(short_code=pk).first()
+        if obj:
+            return Response({"dest_url": obj.dest_url}, status=status.HTTP_200_OK)
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)

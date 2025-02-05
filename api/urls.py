@@ -1,10 +1,10 @@
 from django.urls import path, include
-from .views import (
-    ShortenURLApiView,
-    ResolveURLApiView,
-)
+from rest_framework.routers import DefaultRouter
+from .views import PathsViewSet
+
+router = DefaultRouter()
+router.register(r'paths', PathsViewSet, basename="paths")
 
 urlpatterns = [
-    path('shorten/', ShortenURLApiView.as_view(), name="shorten_url"),
-    path("resolve/<str:short_code>/", ResolveURLApiView.as_view(), name="resolve_url"),
+    path("", include(router.urls)),
 ]
