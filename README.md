@@ -75,4 +75,4 @@ Use the following command to run the application on localhost:
 
 `python manage.py runserver`
 
-Your should then be able to access http://127.0.0.1:8000/ in a browser and see form for creating a shortened URL. Please file an issue if you are unable to after performing all of the above steps.
+You should then be able to access http://127.0.0.1:8000/ in a browser and see form for creating a shortened URL. Please file an issue if you are unable to after performing all of the above steps.
