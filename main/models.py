@@ -8,8 +8,7 @@ class Paths(models.Model):
     short_code = models.CharField(max_length=255, unique=True)
     dest_url = models.CharField(
         max_length=255, 
-        validators=[URLValidator(schemes=['http', 'https'])],
-        unique=True
+        validators=[URLValidator(schemes=['http', 'https'])]
     )
     admin_added = models.BooleanField(default=False)
 
