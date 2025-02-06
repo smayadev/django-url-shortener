@@ -1,7 +1,7 @@
 import pika
 import json
 from celery import shared_task
-from django.utils.timezone import now
+from datetime import datetime
 from django.conf import settings
 
 @shared_task
@@ -14,13 +14,13 @@ def send_click_to_rabbitmq(short_code, ip_address, user_agent, referrer):
         "ip_address": ip_address,
         "user_agent": user_agent,
         "referrer": referrer,
-        "timestamp": now().isoformat()
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     try:
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=settings.RABBITMQ_HOST))
         channel = connection.channel()
-        channel.exchange_declare(exchange="clicks", exchange_type="fanout")
+        channel.exchange_declare(exchange="clicks", exchange_type="fanout", durable=True)
         channel.basic_publish(exchange="clicks", routing_key="", body=json.dumps(click_data))
         connection.close()
     except Exception as e:
