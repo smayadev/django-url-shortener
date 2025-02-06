@@ -6,10 +6,12 @@ CREATE TABLE IF NOT EXISTS url_shortener.clicks_queue (
     user_agent String,
     referrer String,
     timestamp DateTime DEFAULT now()
-) ENGINE = RabbitMQ 
+) ENGINE = RabbitMQ
 SETTINGS 
     rabbitmq_host_port = 'rabbitmq:5672',
     rabbitmq_exchange_name = 'clicks',
     rabbitmq_format = 'JSONEachRow',
+    rabbitmq_queue_base = 'clicks_queue',
+    rabbitmq_num_consumers = 1,
     rabbitmq_username = 'guest',
     rabbitmq_password = 'guest';
