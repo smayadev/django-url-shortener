@@ -39,6 +39,8 @@ CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = os.environ.get("CELERY_ACCEPT_CONTENT")
 CELERY_TASK_SERIALIZER = os.environ.get("CELERY_TASK_SERIALIZER")
 
+RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")
+
 # Application definition
 
 INSTALLED_APPS = [
