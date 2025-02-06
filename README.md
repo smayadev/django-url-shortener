@@ -8,6 +8,8 @@ This app will shorten it to something like: http://127.0.0.1/G7dt9mY (of course 
 
 Redis caching is utilized for the short path and the timeout can be adjusted in .env.
 
+ClickHouse and RabbitMQ are being used to implement click tracking, this is WIP.
+
 ### Installation
 
 These steps will guide you through setting up this app using the minimum requirements (sqlite3 database, hosted at localhost).
