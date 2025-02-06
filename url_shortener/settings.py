@@ -35,6 +35,10 @@ DEBUG = os.environ.get("DEBUG")
 ALLOWED_HOSTS = json.loads(os.environ['ALLOWED_HOSTS'])
 CSRF_TRUSTED_ORIGINS = json.loads(os.environ['CSRF_TRUSTED_ORIGINS'])
 
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_ACCEPT_CONTENT = os.environ.get("CELERY_ACCEPT_CONTENT")
+CELERY_TASK_SERIALIZER = os.environ.get("CELERY_TASK_SERIALIZER")
+
 # Application definition
 
 INSTALLED_APPS = [
