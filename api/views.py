@@ -46,4 +46,33 @@ class ResolveURLViewSet(viewsets.ViewSet):
         obj = self.get_queryset().filter(short_code=pk).first()
         if obj:
             return Response({"dest_url": obj.dest_url}, status=status.HTTP_200_OK)
-        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': '404 Not Found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+class StatsViewSet(viewsets.ViewSet):
+    """
+    Returns analytics for a given short URL.
+    """
+    permission_classes = [HasAdminAPIKey]
+
+    def get_queryset(self):
+        return Paths.objects.all()
+
+    def retrieve(self, request, pk=None):
+        """
+        Returns placeholder stats for a short URL
+        """
+        obj = self.get_queryset().filter(short_code=pk).first()
+
+        if obj:
+
+            stats_data = {
+                'short_code': obj.short_code,
+                'dest_url': obj.dest_url,
+                'clicks': 0,
+                'unique_visitors': 0,
+                'last_visited': None,
+            }
+
+            return Response(stats_data, status=status.HTTP_200_OK)
+        return Response({'error': '404 Not Found'}, status=status.HTTP_404_NOT_FOUND)
