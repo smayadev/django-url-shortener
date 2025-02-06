@@ -22,7 +22,7 @@ Clone this repo into a directory where you would like to store the source files.
 
 Replace "giturl" with the actual git URL of this repo.
 
-#### 2. Launch the Redis Docker container
+#### 2. Launch the Redis, ClickHouse, and RabbitMQ Docker container
 
 This step assumes you have Docker and Docker Compose installed.
 
@@ -30,7 +30,7 @@ Navigate into the `docker` folder in this repo and run:
 
 `docker-compose up -d`
 
-Use the `docker ps` command to check if the Redis container launched and is running without crashing.
+Use the `docker ps` command to check if the containers launched and are running without crashing.
 
 #### 3. Install requirements
 
