@@ -8,6 +8,7 @@ from django.utils.html import format_html
 import redis
 from .models import Paths
 from .forms import PathsForm
+from .tasks import send_click_to_rabbitmq
 
 
 class IndexView(TemplateView):
@@ -45,6 +46,15 @@ class IndexView(TemplateView):
 
 redis_client = redis.StrictRedis.from_url(settings.CACHES['default']['LOCATION'], decode_responses=True)
 
+def get_client_ip(request):
+    """
+    Extracts the client IP address from the request headers
+    """
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0]  # Get the first IP in the list
+    return request.META.get("REMOTE_ADDR")
+
 def redirect_to_dest(request, short_code):
 
     short_url = get_object_or_404(Paths, short_code=short_code)
@@ -60,5 +70,11 @@ def redirect_to_dest(request, short_code):
         redis_client.setex(cache_key, 3600, short_url.dest_url)
     except (redis.ConnectionError, redis.TimeoutError):
         print('redis connection failed when redirecting URL')
+
+    user_ip = get_client_ip(request)
+    user_agent = request.META.get("HTTP_USER_AGENT", "")
+    referrer = request.META.get("HTTP_REFERER", "")
+
+    send_click_to_rabbitmq.delay(short_code, user_ip, user_agent, referrer)
 
     return redirect(short_url.dest_url)
