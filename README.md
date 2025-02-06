@@ -6,7 +6,7 @@ For example, you have a URL like this: https://www.example.com/a-really-long-pat
 
 This app will shorten it to something like: http://127.0.0.1/G7dt9mY (of course the protocol and domain may differ in your scenario).
 
-Redis caching is utilized for the short path and the timeout can be adjusted in .env.
+Redis caching is utilized for the shortened URL and the timeout can be adjusted in .env.
 
 ClickHouse and RabbitMQ are being used to implement click tracking, this is WIP.
 
