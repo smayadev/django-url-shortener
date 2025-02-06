@@ -14,6 +14,9 @@ services:
     image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
     restart: always
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "8123:8123"
       - "9000:9000"
@@ -35,6 +38,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   clickhouse_data:
