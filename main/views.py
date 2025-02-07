@@ -56,25 +56,27 @@ def get_client_ip(request):
     return request.META.get("REMOTE_ADDR")
 
 def redirect_to_dest(request, short_code):
-
     short_url = get_object_or_404(Paths, short_code=short_code)
+    cached_url = None
 
     try:
         cache_key = f'url:{short_code}'
-
         cached_url = redis_client.get(cache_key)
 
         if cached_url:
-            return redirect(cached_url)
-        
-        redis_client.setex(cache_key, 3600, short_url.dest_url)
+            print('Cache hit!')
+        else:
+            print('Cache miss!')
+            redis_client.setex(cache_key, 3600, short_url.dest_url)
+
     except (redis.ConnectionError, redis.TimeoutError):
-        print('redis connection failed when redirecting URL')
+        print('Redis connection failed when redirecting URL')
 
     user_ip = get_client_ip(request)
     user_agent = request.META.get("HTTP_USER_AGENT", "")
     referrer = request.META.get("HTTP_REFERER", "")
 
+    print(f'Dispatching click tracking for {short_code}')
     send_click_to_rabbitmq.delay(short_code, user_ip, user_agent, referrer)
 
-    return redirect(short_url.dest_url)
+    return redirect(cached_url if cached_url else short_url.dest_url)
