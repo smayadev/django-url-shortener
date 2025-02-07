@@ -1,7 +1,7 @@
 import pika
 import json
 from celery import shared_task
-from datetime import datetime
+from datetime import datetime, timezone
 from django.conf import settings
 
 @shared_task
@@ -9,12 +9,14 @@ def send_click_to_rabbitmq(short_code, ip_address, user_agent, referrer):
     """
     Sends click data to RabbitMQ asynchronously
     """
+    print(f'Task received: {short_code}, {ip_address}, {user_agent}, {referrer}')
+
     click_data = {
         "short_code": short_code,
         "ip_address": ip_address,
         "user_agent": user_agent,
         "referrer": referrer,
-        "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     }
 
     try:
