@@ -1,0 +1,21 @@
+# Use official Python image as base
+FROM python:3.11
+
+# Set work directory inside container
+WORKDIR /app
+
+# Copy necessary files
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application source code
+COPY . .
+
+# Create a non-root user
+RUN groupadd -r celery && useradd -r -g celery celery
+
+# Set user to the non-root user
+USER celery
+
+# Set the entrypoint for Celery
+CMD ["celery", "-A", "main", "worker", "--loglevel=info"]
