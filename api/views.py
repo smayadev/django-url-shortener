@@ -1,9 +1,11 @@
+from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from main.models import Paths
 from .serializers import PathsSerializer
 from .permissions import HasUserAPIKey, HasAdminAPIKey
+import clickhouse_connect
 
 
 class PathsViewSet(viewsets.ModelViewSet):
@@ -65,13 +67,23 @@ class StatsViewSet(viewsets.ViewSet):
 
         if obj:
 
-            stats_data = {
-                'short_code': obj.short_code,
-                'dest_url': obj.dest_url,
-                'clicks': 0,
-                'unique_visitors': 0,
-                'last_visited': None,
-            }
+            client = clickhouse_connect.get_client(
+                host=settings.CLICKHOUSE_HOST,
+                interface=settings.CLICKHOUSE_INTERFACE,
+                port=settings.CLICKHOUSE_HTTP_PORT, 
+                username=settings.CLICKHOUSE_USER, 
+                password=settings.CLICKHOUSE_PASSWORD,
+                connect_timeout=settings.CLICKHOUSE_HTTP_TIMEOUT,
+            )
+            parameters = {'short_code': obj.short_code}
+            query_result = client.query('SELECT short_code, sumMerge(total_clicks) AS total_clicks, uniqCombinedMerge(unique_visitors) AS unique_visitors, maxMerge(last_visited) AS last_visited FROM url_shortener.clicks_aggregated where short_code = {short_code:String} GROUP BY short_code order by total_clicks desc limit 1', parameters=parameters)
+
+            column_names, rows = query_result.column_names, query_result.result_rows
+
+            if not rows:
+                stats_data = {'error': 'No stats found for this short code'}
+            else:
+                stats_data = dict(zip(column_names, rows[0]))
 
             return Response(stats_data, status=status.HTTP_200_OK)
         return Response({'error': '404 Not Found'}, status=status.HTTP_404_NOT_FOUND)
