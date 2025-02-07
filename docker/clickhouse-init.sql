@@ -31,18 +31,18 @@ FROM url_shortener.clicks_queue;
 
 CREATE TABLE IF NOT EXISTS url_shortener.clicks_aggregated (
     short_code String,
-    total_clicks UInt64,
-    unique_visitors UInt64,
-    last_visited DateTime
-) ENGINE = SummingMergeTree()
+    total_clicks AggregateFunction(sum, UInt64),
+    unique_visitors AggregateFunction(uniqCombined, String),
+    last_visited AggregateFunction(max, DateTime)
+) ENGINE = AggregatingMergeTree()
 ORDER BY short_code;
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS url_shortener.clicks_mv_aggregated TO url_shortener.clicks_aggregated AS
 SELECT 
     short_code, 
-    COUNT(*) AS total_clicks,
-    COUNT(DISTINCT ip_address) AS unique_visitors,
-    MAX(timestamp) AS last_visited
+    sumState(cast(1 AS UInt64)) AS total_clicks,
+    uniqCombinedState(ip_address) AS unique_visitors,
+    maxState(timestamp) AS last_visited
 FROM url_shortener.clicks_persistent
-WHERE timestamp >= now() - INTERVAL 30 DAY
+WHERE timestamp >= (now() - toIntervalDay(30))
 GROUP BY short_code;
