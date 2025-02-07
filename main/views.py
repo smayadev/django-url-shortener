@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.html import format_html
+from kombu.exceptions import OperationalError
 import redis
 from .models import Paths
 from .forms import PathsForm
@@ -76,7 +77,11 @@ def redirect_to_dest(request, short_code):
     user_agent = request.META.get("HTTP_USER_AGENT", "")
     referrer = request.META.get("HTTP_REFERER", "")
 
-    print(f'Dispatching click tracking for {short_code}')
-    send_click_to_rabbitmq.delay(short_code, user_ip, user_agent, referrer)
+    try:
+        print(f'Dispatching click tracking to rabbitmq for {short_code}')
+        send_click_to_rabbitmq.delay(short_code, user_ip, user_agent, referrer)
+    except (OperationalError, Exception) as e:
+        print(f"Failed to send click to rabbitmq: {e}")
+
 
     return redirect(cached_url if cached_url else short_url.dest_url)
