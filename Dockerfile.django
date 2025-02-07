@@ -29,4 +29,8 @@ COPY . /app/
 EXPOSE 8000
  
 # Run Django’s development server
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "url_shortener.wsgi:application"]
+#CMD ["gunicorn", "-b", "0.0.0.0:8000", "url_shortener.wsgi:application"]
+
+COPY entrypoint-django.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
