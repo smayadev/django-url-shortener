@@ -2,6 +2,7 @@ import random
 import string
 from django.db import models
 from django.core.validators import URLValidator
+from api.models import PathsAPIKey
 
 
 class Paths(models.Model):
@@ -11,6 +12,12 @@ class Paths(models.Model):
         validators=[URLValidator(schemes=['http', 'https'])]
     )
     admin_added = models.BooleanField(default=False)
+    api_key = models.ForeignKey(
+        PathsAPIKey, 
+        null=True, 
+        blank=True, 
+        on_delete=models.SET_NULL
+    )
 
     def save(self, *args, **kwargs):
         """

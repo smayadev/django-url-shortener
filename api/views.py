@@ -5,6 +5,7 @@ from rest_framework import status
 from main.models import Paths
 from .serializers import PathsSerializer
 from .permissions import HasUserAPIKey, HasAdminAPIKey
+from .models import PathsAPIKey
 import clickhouse_connect
 from clickhouse_connect.driver.exceptions import OperationalError
 
@@ -26,9 +27,14 @@ class ShortenURLViewSet(viewsets.ViewSet):
 
     def create(self, request):
         serializer = PathsSerializer(data=request.data)
+
+        api_key = request.headers.get("Authorization", "").replace("Api-Key ", "").strip()
+        api_key_obj = PathsAPIKey.objects.filter(prefix=api_key[:8]).first()
+
         if serializer.is_valid():
-            obj = serializer.save()
+            obj = serializer.save(api_key=api_key_obj)
             return Response(PathsSerializer(obj).data, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -55,16 +61,29 @@ class StatsViewSet(viewsets.ViewSet):
     """
     Returns analytics for a given short URL.
     """
-    permission_classes = [HasAdminAPIKey]
+    #permission_classes = [HasAdminAPIKey]
+    permission_classes = [HasUserAPIKey]
 
     def get_queryset(self):
         return Paths.objects.all()
 
     def retrieve(self, request, pk=None):
         """
-        Returns placeholder stats for a short URL
+        Returns stats for a short URL
         """
+
+        api_key = request.headers.get('Authorization', '').replace('Api-Key ', '').strip()
+        api_key_prefix = api_key[:8]
+        api_key_obj = PathsAPIKey.objects.filter(prefix=api_key_prefix).first()
+
         obj = self.get_queryset().filter(short_code=pk).first()
+
+        if not api_key_obj.is_admin:
+            if obj.api_key.prefix != api_key_prefix:
+                return Response(
+                    {'error': '403 Forbidden'}, 
+                    status=status.HTTP_403_FORBIDDEN
+                )
 
         if obj:
 
