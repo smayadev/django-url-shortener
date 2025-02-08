@@ -8,76 +8,68 @@ This app will shorten it to something like: http://127.0.0.1/G7dt9mY (of course 
 
 Redis caching is utilized for the shortened URL and the timeout can be adjusted in .env.
 
-ClickHouse and RabbitMQ are being used to implement click tracking, this is WIP.
+ClickHouse and Celery/RabbitMQ are used to implement click tracking.
 
 ### Installation
 
-These steps will guide you through setting up this app using the minimum requirements (sqlite3 database, hosted at localhost).
-
-It is recommended to install the requirements into and run python from a virtual env. Adjust the name of your pip/python binaries or paths as needed.
+These steps will guide you through setting up this app using the minimum requirements.
 
 #### 1. Clone this repo
 
 Clone this repo into a directory where you would like to store the source files.
 
-`git clone giturl .`
+`git clone giturl`
 
 Replace "giturl" with the actual git URL of this repo.
 
-#### 2. Launch the Redis, ClickHouse, and RabbitMQ Docker container
+#### 2. Copy .env.sample to .env and configure
+
+Navigate into the project directory:
+
+`cd django-url-shortener`
+
+Copy .env.sample to .env:
+
+`cp .env.sample .env`
+
+Open .env in your favorite text editor and configure the variables. At the very minimum, you will need to set a DJANGO_SECRET_KEY. You may use the secret key generator script in this project:
+
+`python3 secret_key_generator.py`
+
+The remaining variables are set for local testing and development but any passwords and usernames would need to be changed for production environments.
+
+#### 3. Launch the Docker containers
 
 This step assumes you have Docker and Docker Compose installed.
 
-Navigate into the `docker` folder in this repo and run:
+Run the following to build and launch the containers:
 
-`docker-compose up -d`
+```
+docker-compose build
+docker-compose up -d
+```
 
 Use the `docker ps` command to check if the containers launched and are running without crashing.
 
-#### 3. Install requirements
+#### 4. Create a Django superuser
 
-Navigate to the directory where you cloned the source. You should be at the same level as requirements.txt and manage.py. Use the following command to install any required python packages:
+Run the following to create a Django superuser:
 
-`pip install -r requirements.txt`
+`docker exec -it django-app python manage.py createsuperuser`
 
-#### 4. Environment variables
+#### 5. Run tests
 
-Copy .env.sample to .env and open the file. Make changes as necessary to configure database details, allowed hosts, debug mode, etc. 
+TODO
 
-To generate a secret key, run these commands from inside a python3 shell:
+#### 6. Run application
 
-```
-from django.core.management.utils import get_random_secret_key
-get_random_secret_key()
-```
+At this point you should then be able to access http://127.0.0.1/ in a browser and see form for creating a shortened URL.
 
-#### 5. Database migrations
+The admin area is located at http://127.0.0.1/admin .
 
-Use the following command to set up the database:
+### API Documentation
 
-`python manage.py migrate`
-
-#### 6. Create a superuser
-
-Use the following command to create a superuser:
-
-`python manage.py createsuperuser`
-
-#### 7. Run tests
-
-Use the following command to run tests:
-
-`python manage.py test`
-
-The tests should all pass. Please file an issue if they don't.
-
-#### 8. Run application
-
-Use the following command to run the application on localhost:
-
-`python manage.py runserver`
-
-You should then be able to access http://127.0.0.1:8000/ in a browser and see form for creating a shortened URL. Please file an issue if you are unable to after performing all of the above steps.
+TODO
 
 ### Roadmap
 
