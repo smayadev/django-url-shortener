@@ -81,5 +81,5 @@ You should then be able to access http://127.0.0.1:8000/ in a browser and see fo
 
 ### Roadmap
 
-- Allow anonymous users to create API keys
+- Allow anonymous users to create API keys (restrict by IP? require email verification?)
 - Add API request rate limiting
