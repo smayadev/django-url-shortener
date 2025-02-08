@@ -11,6 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application source code
 COPY . .
 
+RUN pip install psycopg[binary]
+
 # Create a non-root user
 RUN groupadd -r celery && useradd -r -g celery celery
 
