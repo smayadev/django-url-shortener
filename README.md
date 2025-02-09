@@ -152,3 +152,4 @@ Example response:
 - Automatically load some starting captcha question and answers into the database
 - Document running tests with the new Docker setup
 - Automatically create a superuser based on .env variables
+- Docstrings where applicable
