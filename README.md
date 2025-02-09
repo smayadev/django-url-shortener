@@ -67,6 +67,10 @@ At this point you should then be able to access http://127.0.0.1/ in a browser a
 
 The admin area is located at http://127.0.0.1/admin .
 
+#### 7. Create some captcha questions and answers
+
+Log into the admin area and navigate to "Captchas" under "Main" on the left. Create several question and answers.
+
 ### API Documentation
 
 TODO
