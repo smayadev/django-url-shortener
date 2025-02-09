@@ -147,6 +147,7 @@ Example response:
 
 ### Roadmap
 
+- Component diagram for README
 - Allow anonymous users to create API keys (restrict by IP? require email verification?)
 - Add API request rate limiting
 - Automatically load some starting captcha question and answers into the database
