@@ -120,8 +120,12 @@ def redirect_to_dest(request, short_code):
     try:
         print(f'Dispatching click tracking to rabbitmq for {short_code}')
         send_click_to_rabbitmq.delay(short_code, user_ip, user_agent, referrer)
-    except (OperationalError, Exception) as e:
-        print(f"Failed to send click to rabbitmq: {e}")
+    except OperationalError as e:
+        print(f"OperationalError: Failed to send click to rabbitmq: {e}")
+    except Exception as e:
+        print(f"Exception: Failed to send click to rabbitmq: {e}")
 
-
-    return redirect(cached_url if cached_url else short_url.dest_url)
+    if cached_url:
+        return redirect(cached_url)
+    
+    return redirect(short_url.dest_url)
