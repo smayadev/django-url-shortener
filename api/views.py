@@ -117,5 +117,3 @@ class StatsViewSet(viewsets.ViewSet):
                 {'error': '500 Internal Server Error: stats backend unavailable'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-            
-        # return Response({'error': '404 Not Found'}, status=status.HTTP_404_NOT_FOUND)
