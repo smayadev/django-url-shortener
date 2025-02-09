@@ -5,6 +5,18 @@ from django.core.validators import URLValidator
 from api.models import PathsAPIKey
 
 
+class Captcha(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Captcha'
+        verbose_name_plural = 'Captchas'
+
+    def __str__(self):
+        return self.question
+
+
 class Paths(models.Model):
     short_code = models.CharField(max_length=255, unique=True)
     dest_url = models.CharField(

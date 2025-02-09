@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.conf import settings
-from .models import Paths
+from .models import Paths, Captcha
+
+
+@admin.register(Captcha)
+class CaptchaAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer']
 
 
 @admin.register(Paths)

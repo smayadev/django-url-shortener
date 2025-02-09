@@ -2,14 +2,36 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.utils.html import format_html
 from kombu.exceptions import OperationalError
 import redis
-from .models import Paths
+import random
+from .models import Paths, Captcha
 from .forms import PathsForm
 from .tasks import send_click_to_rabbitmq
+
+def get_captcha(request):
+    """
+    Generate a random captcha challenge from Captcha
+    and return it in a JsonResponse
+    """
+    field_names = [field.name for field in Captcha._meta.fields]
+
+    queryset = Captcha.objects.values_list(*field_names)
+
+    results = {
+        row[0]: {field: row[i] for i, field in enumerate(field_names) if field != "id"}
+        for row in queryset
+    }
+    challenge = random.choice(list(results.keys()))
+
+    return JsonResponse({
+        'captcha_id': challenge,
+        'question': results[challenge]['question']
+    })
+
 
 
 class IndexView(TemplateView):
@@ -19,6 +41,23 @@ class IndexView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
+
+        captcha_id = request.POST.get('captcha-challenge-id')
+        captcha_response = request.POST.get('captcha-response', '').strip().lower()
+
+        if not captcha_id.isdigit():
+            messages.error(request, 'Anti-spam verification failed, invalid id')
+            return HttpResponseRedirect(self.request.path_info)
+
+        try:
+            expected_answer = Captcha.objects.get(pk=int(captcha_id)).answer
+        except:
+            expected_answer = None
+
+        if not expected_answer or captcha_response != expected_answer:
+            messages.error(request, 'Anti-spam verification failed, invalid answer')
+            return HttpResponseRedirect(self.request.path_info)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.save()
@@ -35,6 +74,7 @@ class IndexView(TemplateView):
             messages.success(request, f'Your shortened URL is <strong>{short_url}</strong> {copy_button}')
         else:
             messages.error(request, form.errors.get('dest_url', [''])[0])
+
         return HttpResponseRedirect(self.request.path_info)
 
     def get(self, request, *args, **kwargs):

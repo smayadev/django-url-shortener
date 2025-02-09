@@ -29,16 +29,72 @@
     <p>{{ message }}</p>
 </div>
 
-<form method="post">
+<form method="post" id="shorten-form">
     {% csrf_token %}
     <div class="row">
         <div class="col-sm-10">
             <input name="{{ add_form.dest_url.name }}" id="{{ add_form.dest_url.id_for_label }}" class="form-control form-control-lg" type="text" placeholder="URL" aria-label=".form-control-lg example" required>
         </div>
         <div class="col-sm-2">
-            <button type="submit" class="btn btn-primary btn-lg">Go!</button>
+            <input type="hidden" name="captcha-challenge-id" id="captcha-challenge-id">
+            <input type="hidden" name="captcha-response" id="captcha-response">
+            <button id="submit-button" type="submit" class="btn btn-primary btn-lg" disabled>Go!</button>
         </div>
     </div>
 </form>
+
+<div id="captcha-modal">
+    <p><strong>Anti-spam question</strong></p>
+    <p id="captcha-question"></p>
+    <input type="text" id="captcha-answer" placeholder="Answer:" class="form-control form-control-md" required>
+    <button id="captcha-submit" class="btn btn-primary btn-md mt-2">Verify</button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let urlInput = document.getElementById("{{ add_form.dest_url.id_for_label }}");
+        let submitButton = document.getElementById("submit-button");
+
+        function isValidURL(url) {
+            const urlPattern = /^(https?:\/\/)([a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])*\.)+[a-zA-Z]{2,}(:\d+)?(\/[-a-zA-Z\d%_.~+]*)*(\?[;&a-zA-Z\d%_.~+=-]*)?(#[a-zA-Z\d_]*)?$/;
+            return urlPattern.test(url);
+        }
+
+        submitButton.disabled = true;
+
+        urlInput.addEventListener("input", function () {
+            if (isValidURL(urlInput.value.trim())) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        });
+    });
+
+    document.getElementById("submit-button").addEventListener("click", function (event) {
+        event.preventDefault();
+        let submitButton = document.getElementById("submit-button");
+        submitButton.disabled = true;
+
+        fetch("/captcha/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("CAPTCHA Response:", data);
+                document.getElementById("captcha-question").innerText = data.question;
+                document.getElementById("captcha-challenge-id").value = data.captcha_id;
+                document.getElementById("captcha-modal").style.display = "block";
+            });
+    });
+
+    document.getElementById("captcha-submit").addEventListener("click", function () {
+        let userAnswer = document.getElementById("captcha-answer").value;
+        if (!userAnswer.trim()) return;
+
+        document.getElementById("captcha-response").value = userAnswer;
+        document.getElementById("captcha-modal").style.display = "none";
+
+        document.getElementById("shorten-form").submit();
+    });
+</script>
 
 {% endblock content %}

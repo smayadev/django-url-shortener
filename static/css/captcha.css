@@ -1,0 +1,13 @@
+#captcha-modal {
+    display: none; 
+    position: absolute; 
+    left: 0; 
+    right: 0; 
+    margin-inline: auto; 
+    top: 10%; 
+    max-width: 300px; 
+    background: white; 
+    padding: 20px; 
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5); 
+    z-index: 1000;
+}
