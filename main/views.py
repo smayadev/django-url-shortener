@@ -19,7 +19,7 @@ def get_captcha(request):
     """
     field_names = [field.name for field in Captcha._meta.fields]
 
-    queryset = Captcha.objects.values_list(*field_names)
+    queryset = Captcha.objects.values_list('id', 'question', 'answer')
 
     results = {
         row[0]: {field: row[i] for i, field in enumerate(field_names) if field != "id"}
@@ -49,12 +49,9 @@ class IndexView(TemplateView):
             messages.error(request, 'Anti-spam verification failed, invalid id')
             return HttpResponseRedirect(self.request.path_info)
 
-        try:
-            expected_answer = Captcha.objects.get(pk=int(captcha_id)).answer
-        except:
-            expected_answer = None
+        captcha = Captcha.objects.filter(pk=int(captcha_id)).first()
 
-        if not expected_answer or captcha_response != expected_answer:
+        if not captcha or captcha_response != captcha.answer:
             messages.error(request, 'Anti-spam verification failed, invalid answer')
             return HttpResponseRedirect(self.request.path_info)
 
