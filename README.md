@@ -36,6 +36,8 @@ Open .env in your favorite text editor and configure the variables. At the very 
 
 `python3 secret_key_generator.py`
 
+Comment out the DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL, and DJANGO_SUPERUSER_PASSWORD variables if you want to create a Django superuser manually.
+
 The remaining variables are set for local testing and development but any passwords and usernames would need to be changed for production environments.
 
 #### 3. Launch the Docker containers
@@ -52,6 +54,8 @@ docker-compose up -d
 Use the `docker ps` command to check if the containers launched and are running without crashing.
 
 #### 4. Create a Django superuser
+
+This only applies if the DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL, and DJANGO_SUPERUSER_PASSWORD .env variables were commented out in step #2.
 
 Run the following to create a Django superuser:
 
@@ -152,5 +156,4 @@ Example response:
 - Add API request rate limiting
 - Automatically load some starting captcha question and answers into the database
 - Document running tests with the new Docker setup
-- Automatically create a superuser based on .env variables
 - Docstrings where applicable
