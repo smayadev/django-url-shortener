@@ -153,9 +153,13 @@ Example response:
 
 ### Roadmap
 
-- Component diagram for README
-- Allow anonymous users to create API keys (restrict by IP? require email verification?)
-- Add API request rate limiting
-- Automatically load some starting captcha question and answers into the database
-- Document running tests with the new Docker setup
-- Docstrings where applicable
+- App improvements:
+  - Allow anonymous users to create API keys (restrict by IP? require email verification?)
+  - Add API request rate limiting
+  - Automatically load some starting captcha question and answers into the database
+- Documentation:
+  - Document running tests with the new Docker setup
+  - Component diagram for README
+- Code cleanups:
+  - Docstrings where applicable
+  - Type hints
