@@ -1,5 +1,7 @@
 ## Django URL Shortener
 
+Developed with Python 3.12.2
+
 A Django application for creating a shortened URL.
 
 For example, you have a URL like this: https://www.example.com/a-really-long-path-here
