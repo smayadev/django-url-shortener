@@ -20,7 +20,9 @@ These steps will guide you through setting up this app using the minimum require
 
 Clone this repo into a directory where you would like to store the source files.
 
-`git clone giturl`
+```bash
+git clone giturl
+```
 
 Replace "giturl" with the actual git URL of this repo.
 
@@ -28,15 +30,21 @@ Replace "giturl" with the actual git URL of this repo.
 
 Navigate into the project directory:
 
-`cd django-url-shortener`
+```bash
+cd django-url-shortener
+```
 
 Copy .env.sample to .env:
 
-`cp .env.sample .env`
+```bash
+cp .env.sample .env
+```
 
 Open .env in your favorite text editor and configure the variables. At the very minimum, you will need to set a DJANGO_SECRET_KEY. You may use the secret key generator script in this project:
 
-`python3 secret_key_generator.py`
+```bash
+python3 secret_key_generator.py
+```
 
 Comment out the DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL, and DJANGO_SUPERUSER_PASSWORD variables if you want to create a Django superuser manually.
 
@@ -48,7 +56,7 @@ This step assumes you have Docker and Docker Compose installed.
 
 Run the following to build and launch the containers:
 
-```
+```bash
 docker-compose build
 docker-compose up -d
 ```
@@ -61,7 +69,9 @@ This only applies if the DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL, and 
 
 Run the following to create a Django superuser:
 
-`docker exec -it django-app python manage.py createsuperuser`
+```bash
+docker exec -it django-app python manage.py createsuperuser
+```
 
 #### 5. Run tests
 
@@ -88,13 +98,13 @@ Get all short codes, destination URLs, and short URLs.
 Available for admin API Keys only.
 
 Example request:
-```
+```bash
 curl -X GET http://127.0.0.1/api/paths/ \
      -H "Authorization: Api-Key YOUR_API_KEY"
 ```
 
 Example response:
-```
+```json
 [{"short_code":"RdpYqPT","dest_url":"https://example.com/test1","short_url":"http://127.0.0.1/RdpYqPT"},{"short_code":"oDr9JOs","dest_url":"https://example.com/test2","short_url":"http://127.0.0.1/oDr9JOs"}]
 ```
 
@@ -105,7 +115,7 @@ Shorten a URL.
 Available for both admin and non-admin API keys.
 
 Example request:
-```
+```bash
 curl -X POST http://127.0.0.1/api/shorten/ \
      -H "Authorization: Api-Key YOUR_API_KEY" \
      -H "Content-Type: application/json" \
@@ -113,7 +123,7 @@ curl -X POST http://127.0.0.1/api/shorten/ \
 ```
 
 Example response:
-```
+```json
 {"short_code":"RNw07TE","dest_url":"https://example.com","short_url":"http://127.0.0.1/RNw07TE"}
 ```
 
@@ -124,13 +134,13 @@ Get the destination URL by short_code.
 Available for both admin and non-admin API keys.
 
 Example request:
-```
+```bash
 curl -X GET http://127.0.0.1/api/resolve/RNw07TE/ \
      -H "Authorization: Api-Key YOUR_API_KEY"
 ```
 
 Example response:
-```
+```json
 {"dest_url":"https://example.com"}
 ```
 
@@ -141,13 +151,13 @@ Get stats for a shortened URL by short_code.
 Available for both admin and non-admin API keys, however non-admin API keys may only retrieve stats for their own shortened URLs. Stats for shortened URLs created in the web UI can only be access by admin API keys.
 
 Example request:
-```
+```bash
 curl -X GET http://127.0.0.1:8000/api/stats/RNw07TE/ \
      -H "Authorization: Api-Key YOUR_API_KEY"
 ```
 
 Example response:
-```
+```json
 {"short_code":"RNw07TE","total_clicks":3,"unique_visitors":1,"last_visited":"2025-02-09T03:49:27"}
 ```
 
