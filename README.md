@@ -160,6 +160,7 @@ Example response:
 - Documentation:
   - Document running tests with the new Docker setup
   - Component diagram for README
+  - Troubleshooting section with helpful commands
 - Code cleanups:
   - Docstrings where applicable
   - Type hints
