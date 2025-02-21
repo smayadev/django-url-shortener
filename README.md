@@ -12,6 +12,8 @@ Redis caching is utilized for the shortened URL and the timeout can be adjusted 
 
 ClickHouse and Celery/RabbitMQ are used to implement click tracking.
 
+WIP (work in progress) frontend is in development using Next.js. For now, the active frontend is Django.
+
 ### Installation
 
 These steps will guide you through setting up this app using the minimum requirements.
@@ -164,7 +166,6 @@ Example response:
 ### Roadmap
 
 - App improvements:
-  - Decouple frontend with a JavaScript framework (react, next, express, ?)
   - Allow anonymous users to create API keys (restrict by IP? require email verification?)
   - Add API request rate limiting
   - Automatically load some starting captcha question and answers into the database
