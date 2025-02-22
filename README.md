@@ -89,9 +89,41 @@ The admin area is located at http://127.0.0.1/admin .
 
 Log into the admin area and navigate to "Captchas" under "Main" on the left. Create several question and answers.
 
-#### 7. Running the frontend
+#### 8. Running the WIP frontend
 
-TODO
+The Next.js frontend is currently under development but can be used to shorten a URL.
+
+You will need Node.js (recommended v22.14.0 or latest LTS version) installed first: [Download Node.js](https://nodejs.org/en/download)
+
+A user API token is also required which can be created in the Django admin area (see [API Documentation](#api-documentation)).
+
+Navigate into the frontend directory:
+
+```bash
+cd frontend
+```
+
+Then copy .env.local.sample to .env.local inside the frontend directory:
+
+```bash
+cp .env.local.sample .env.local
+```
+
+Open .env.local and set the configuration variables. BACKEND_API_KEY needs to be set to the API key you created in the Django admin for using the API from the frontend.
+
+Now install the node modules:
+
+```bash
+npm install
+```
+
+Then run the dev server:
+
+```bash
+npm run dev
+```
+
+You should then be able to visit http://localhost:3000/ in a browser and see the new URL shortener frontend.
 
 ### API Documentation
 
@@ -170,6 +202,7 @@ Example response:
 ### Roadmap
 
 - App improvements:
+  - Remove Django frontend when nextjs frontend is usable
   - Allow anonymous users to create API keys (restrict by IP? require email verification?)
   - Add API request rate limiting
   - Automatically load some starting captcha question and answers into the database
