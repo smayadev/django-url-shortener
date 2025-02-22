@@ -26,7 +26,7 @@ export async function POST(req) {
         console.log(response);
 
         if (response.status === 400) {
-          throw new Error("400 Bad Request");
+          throw new Error(data.dest_url ? data.dest_url : "400 Bad Request");
         }
 
       }
