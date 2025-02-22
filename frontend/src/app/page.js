@@ -13,6 +13,7 @@ export default function Home() {
     setResponseMessage(null);
 
     try {
+
       const response = await fetch("/api/submit", {
         method: "POST",
         headers: {
@@ -21,22 +22,25 @@ export default function Home() {
         body: JSON.stringify({ dest_url: inputValue }),
       });
 
-      console.log("inputValue:", inputValue);
-      console.log("JSON:", JSON.stringify({ dest_url: inputValue }))
-
       const data = await response.json();
-      console.log(data);
+
       if (data.short_url) {
         setResponseMessage(`Success! Your shortened URL is ${data.short_url}`);
+      } else if (data.error) {
+        setResponseMessage(data.error);
       } else {
-        console.log("got an error that needs to be returned as error in backend (but it wasn't)");
-        console.log(data);
-        setResponseMessage("an error occurred that wasn't handled as an error");
+        // print a message with error code "6372" as a placeholder for this point in the code
+        setResponseMessage("Error code 6372");
       }
+
     } catch (error) {
-      setResponseMessage("Error submitting the form. Please try again.");
+
+      setResponseMessage("An error occurred.");
+
     } finally {
+
       setLoading(false);
+
     }
   };
 

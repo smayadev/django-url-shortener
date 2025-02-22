@@ -2,8 +2,6 @@ export async function POST(req) {
     try {
       const { dest_url } = await req.json();
 
-      console.log("userInput:", dest_url);
-
       let backendURL = process.env.BACKEND_API_BASE_URL
 
       if (backendURL.endsWith("/")) {
@@ -24,11 +22,20 @@ export async function POST(req) {
   
       const data = await response.json();
 
-      console.log("Data:", data);
-  
+      if (!response.ok) {
+        console.log(response);
+
+        if (response.status === 400) {
+          throw new Error("400 Bad Request");
+        }
+
+      }
+
       return Response.json(data);
+
     } catch (error) {
-        console.log("Error:", error);
-      return Response.json({ error: "Failed to fetch data" }, { status: 500 });
+
+      return Response.json({ error: `${error}` });
+
     }
 }
