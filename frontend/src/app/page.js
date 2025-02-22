@@ -26,6 +26,7 @@ export default function Home() {
 
       if (data.short_url) {
         setResponseMessage(`Success! Your shortened URL is ${data.short_url}`);
+        setInputValue(""); // clear input field upon successful submission
       } else if (data.error) {
         setResponseMessage(data.error);
       } else {
@@ -46,14 +47,14 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-full bg-gray-100 mt-10 md:mt-20 lg:mt-20">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-[800px]">
+      <div className="bg-white p-6 rounded-lg w-full max-w-[800px]">
         <h1 className="text-2xl font-bold mb-4 text-center">URL Shortener</h1>
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter something..."
+            placeholder="URL"
             required
             name="dest_url"
             className="p-4 h-14 text-lg border border-gray-300 rounded flex-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
