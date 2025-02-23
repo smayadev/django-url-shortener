@@ -3,6 +3,13 @@ from django.conf import settings
 from main.models import Paths
 
 
+class CaptchaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Paths
+        fields = ['id', 'question', 'answer']
+        read_only_fields = ['id', 'question', 'answer']
+
+
 class PathsSerializer(serializers.ModelSerializer):
     short_url = serializers.SerializerMethodField()
 

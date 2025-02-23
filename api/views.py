@@ -1,10 +1,11 @@
+import random
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-from main.models import Paths
+from main.models import Paths, Captcha
 from .serializers import PathsSerializer
-from .permissions import HasUserAPIKey, HasAdminAPIKey
+from .permissions import HasUserAPIKey, HasAdminAPIKey, HasSystemAPIKey
 from .models import PathsAPIKey
 import clickhouse_connect
 from clickhouse_connect.driver.exceptions import OperationalError
@@ -23,7 +24,7 @@ class ShortenURLViewSet(viewsets.ViewSet):
     """
     Allows users to shorten URLs
     """
-    permission_classes = [HasUserAPIKey]
+    permission_classes = [HasUserAPIKey, HasSystemAPIKey]
 
     def create(self, request):
         serializer = PathsSerializer(data=request.data)
@@ -45,7 +46,7 @@ class ResolveURLViewSet(viewsets.ViewSet):
     """
     Allows users to resolve a short URL.
     """
-    permission_classes = [HasUserAPIKey]
+    permission_classes = [HasUserAPIKey, HasSystemAPIKey]
 
     def get_queryset(self):
         return Paths.objects.all()
@@ -85,6 +86,7 @@ class StatsViewSet(viewsets.ViewSet):
         if not obj:
             return Response({'error': 'Invalid short_code'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # API key must be admin or the user who added the short url being retrieved
         if not api_key_obj.is_admin and obj.api_key.prefix != api_key_prefix:
             return Response(
                 {'error': '403 Forbidden'}, 
@@ -117,3 +119,39 @@ class StatsViewSet(viewsets.ViewSet):
                 {'error': '500 Internal Server Error: stats backend unavailable'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+
+class GetCaptchaQuestionViewSet(viewsets.ViewSet):
+    """
+    Allows a system user to retrieve a random captcha question.
+    """
+    permission_classes = [HasSystemAPIKey]
+
+    def get_queryset(self):
+        return Captcha.objects.all()
+
+    def retrieve(self, request, pk=None):
+        """
+        Handle GET requests to retrieve a random captcha question
+        """
+        try:
+            field_names = [field.name for field in Captcha._meta.fields]
+
+            queryset = Captcha.objects.values_list('id', 'question', 'answer')
+
+            results = {
+                row[0]: {field: row[i] for i, field in enumerate(field_names) if field != "id"}
+                for row in queryset
+            }
+            challenge = random.choice(list(results.keys()))
+
+            return Response(
+                {'captcha_id': challenge, 'question': results[challenge]['question']}, 
+                status=status.HTTP_200_OK
+            )
+        except:
+            return Response(
+                {'error': '404 Not Found'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
