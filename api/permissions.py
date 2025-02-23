@@ -32,7 +32,7 @@ class HasAdminAPIKey(BaseHasAPIKey):
         return api_key and api_key.is_admin
 
 
-class HasUserAPIKey(BaseHasAPIKey):
+class HasAnyAPIKey(BaseHasAPIKey):
     """
     All valid API keys can access
     """

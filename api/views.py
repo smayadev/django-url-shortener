@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from main.models import Paths, Captcha
 from .serializers import PathsSerializer
-from .permissions import HasUserAPIKey, HasAdminAPIKey, HasSystemAPIKey
+from .permissions import HasAnyAPIKey, HasAdminAPIKey, HasSystemAPIKey
 from .models import PathsAPIKey
 import clickhouse_connect
 from clickhouse_connect.driver.exceptions import OperationalError
@@ -24,7 +24,7 @@ class ShortenURLViewSet(viewsets.ViewSet):
     """
     Allows users to shorten URLs
     """
-    permission_classes = [HasUserAPIKey, HasSystemAPIKey]
+    permission_classes = [HasAnyAPIKey]
 
     def create(self, request):
         serializer = PathsSerializer(data=request.data)
@@ -46,7 +46,7 @@ class ResolveURLViewSet(viewsets.ViewSet):
     """
     Allows users to resolve a short URL.
     """
-    permission_classes = [HasUserAPIKey, HasSystemAPIKey]
+    permission_classes = [HasAnyAPIKey, HasSystemAPIKey]
 
     def get_queryset(self):
         return Paths.objects.all()
@@ -65,7 +65,7 @@ class StatsViewSet(viewsets.ViewSet):
     """
     Returns analytics for a given short URL.
     """
-    permission_classes = [HasUserAPIKey]
+    permission_classes = [HasAnyAPIKey]
 
     def get_queryset(self):
         return Paths.objects.all()
@@ -150,6 +150,7 @@ class GetCaptchaQuestionViewSet(viewsets.ViewSet):
                 status=status.HTTP_200_OK
             )
         except:
+            print("Error retrieving captcha question")
             return Response(
                 {'error': '404 Not Found'}, 
                 status=status.HTTP_404_NOT_FOUND
