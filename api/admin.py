@@ -11,8 +11,8 @@ except admin.sites.NotRegistered:
 
 @admin.register(PathsAPIKey)
 class PathsAPIKeyAdmin(APIKeyModelAdmin):
-    list_display = ("name", "prefix", "created", "expiry_date", "is_admin")
-    fields = ("name", "revoked", "expiry_date", "is_admin")
+    list_display = ("name", "prefix", "created", "expiry_date", "is_admin", "is_system")
+    fields = ("name", "revoked", "expiry_date", "is_admin", "is_system")
     search_fields = ("name", "prefix")
 
     def get_readonly_fields(self, request, obj=None):
