@@ -46,7 +46,7 @@ class ResolveURLViewSet(viewsets.ViewSet):
     """
     Allows users to resolve a short URL.
     """
-    permission_classes = [HasAnyAPIKey, HasSystemAPIKey]
+    permission_classes = [HasAnyAPIKey]
 
     def get_queryset(self):
         return Paths.objects.all()
@@ -87,7 +87,7 @@ class StatsViewSet(viewsets.ViewSet):
             return Response({'error': 'Invalid short_code'}, status=status.HTTP_400_BAD_REQUEST)
 
         # API key must be admin or the user who added the short url being retrieved
-        if not api_key_obj.is_admin and obj.api_key.prefix != api_key_prefix:
+        if api_key_obj.is_system or (not api_key_obj.is_admin and obj.api_key.prefix != api_key_prefix):
             return Response(
                 {'error': '403 Forbidden'}, 
                 status=status.HTTP_403_FORBIDDEN
@@ -130,7 +130,7 @@ class GetCaptchaQuestionViewSet(viewsets.ViewSet):
     def get_queryset(self):
         return Captcha.objects.all()
 
-    def retrieve(self, request, pk=None):
+    def list(self, request):
         """
         Handle GET requests to retrieve a random captcha question
         """
