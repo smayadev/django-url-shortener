@@ -132,7 +132,7 @@ class CaptchaQuestionViewSet(viewsets.ViewSet):
         return Captcha.objects.all()
     
     @action(detail=True, methods=['post'])
-    def check_value(self, request, pk=None):
+    def check(self, request, pk=None):
         """
         Check if the provided answer matches the captcha question answer in the db
         """
