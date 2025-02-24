@@ -1,6 +1,7 @@
 export async function POST(req) {
     try {
       const { dest_url } = await req.json();
+      const apiKey = process.env.BACKEND_API_KEY;
 
       let backendURL = process.env.BACKEND_API_BASE_URL
 
@@ -14,7 +15,7 @@ export async function POST(req) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Api-Key ${process.env.BACKEND_API_KEY}`,
+          "Authorization": `Api-Key ${apiKey}`,
         },
         body: JSON.stringify({ dest_url }),
 
