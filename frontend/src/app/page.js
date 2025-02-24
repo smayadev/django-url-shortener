@@ -94,7 +94,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full bg-gray-100 mt-10 md:mt-20 lg:mt-20">
+    <div className="relative flex flex-col items-center justify-center min-h-full bg-white w-full mt-10 md:mt-5 lg:mt-20">
       <div className="bg-white p-6 rounded-lg w-full max-w-[800px]">
         <h1 className="text-2xl font-bold mb-4 text-center">URL Shortener</h1>
         <form onSubmit={handleGetCaptcha} className="flex items-center space-x-2">
@@ -118,31 +118,29 @@ export default function Home() {
 
       {/* Captcha Modal */}
       {isCaptchaVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Security Check</h2>
-            <p className="mb-4">{captcha?.question}</p>
-            <input
-              type="text"
-              value={captchaAnswer}
-              onChange={(e) => setCaptchaAnswer(e.target.value)}
-              className="p-2 border border-gray-300 rounded w-full mb-4" />
-            {captchaError && <p className="text-red-500">{captchaError}</p>}
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={handleCaptchaCheck}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Submit
-              </button>
-              <button 
-                onClick={handleCaptchaCancel}
-                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
-                Cancel
-              </button>
-            </div>
+      <div className="fixed inset-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-start pt-24 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold">Anti-Bot Question</h2>
+          <p>{captcha.question}</p>
+          <input
+            type="text"
+            value={captchaAnswer}
+            onChange={(e) => setCaptchaAnswer(e.target.value)}
+            placeholder="Enter your answer"
+            className="border border-gray-300 rounded w-full p-2 mt-2"
+          />
+          <div className="flex justify-end mt-4">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded mr-2" onClick={handleCaptchaCheck}>
+              Submit
+            </button>
+            <button className="bg-gray-300 px-4 py-2 rounded" onClick={handleCaptchaCancel}>
+              Cancel
+            </button>
           </div>
         </div>
-      )}
+      </div>
+    )}
+
     </div>
   );
 }
