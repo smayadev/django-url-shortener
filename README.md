@@ -190,7 +190,7 @@ Available for both admin and non-admin API keys, however non-admin API keys may 
 
 Example request:
 ```bash
-curl -X GET http://127.0.0.1:8000/api/stats/RNw07TE/ \
+curl -X GET http://127.0.0.1/api/stats/RNw07TE/ \
      -H "Authorization: Api-Key YOUR_API_KEY"
 ```
 
@@ -207,13 +207,32 @@ Available only for system API keys.
 
 Example request:
 ```bash
-curl -X GET http://127.0.0.1:8000/api/captcha/ \
+curl -X GET http://127.0.0.1/api/captcha/ \
      -H "Authorization: Api-Key YOUR_API_KEY"
 ```
 
 Example response:
 ```json
 {"captcha_id":4,"question":"What is 7 + 4?"}
+```
+
+#### POST /api/captcha/{captcha_id}/check/
+
+Check a user's captcha answer against the captcha answer in the database. Returns a boolean response for the "match" key.
+
+Available only for system API keys.
+
+Example request:
+```bash
+curl -X POST http://127.0.0.1/api/captcha/4/check/ \
+     -H "Authorization: Api-Key YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"answer": "11"}'
+```
+
+Example response:
+```json
+{"match":true}
 ```
 
 ### Roadmap
