@@ -2,6 +2,7 @@ import random
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework import status
 from main.models import Paths, Captcha
 from .serializers import PathsSerializer
@@ -121,7 +122,7 @@ class StatsViewSet(viewsets.ViewSet):
             )
         
 
-class GetCaptchaQuestionViewSet(viewsets.ViewSet):
+class CaptchaQuestionViewSet(viewsets.ViewSet):
     """
     Allows a system user to retrieve a random captcha question.
     """
@@ -129,6 +130,19 @@ class GetCaptchaQuestionViewSet(viewsets.ViewSet):
 
     def get_queryset(self):
         return Captcha.objects.all()
+    
+    @action(detail=True, methods=['post'])
+    def check_value(self, request, pk=None):
+        """
+        Check if the provided answer matches the captcha question answer in the db
+        """
+        obj = self.get_queryset().filter(pk=pk).first()
+        answer = request.data.get('answer')
+
+        if obj.answer == answer:
+            return Response({'match': True})
+        else:
+            return Response({'match': False})
 
     def list(self, request):
         """
