@@ -137,12 +137,16 @@ class CaptchaQuestionViewSet(viewsets.ViewSet):
         Check if the provided answer matches the captcha question answer in the db
         """
         obj = self.get_queryset().filter(pk=pk).first()
-        answer = request.data.get('answer')
 
-        if obj.answer == answer:
-            return Response({'match': True})
-        else:
-            return Response({'match': False})
+        try:
+            user_answer = str(request.data.get('answer')).lower().strip()
+            obj_answer = str(obj.answer).lower().strip()
+            if obj_answer == user_answer:
+                return Response({'match': True}, status=status.HTTP_200_OK)
+            else:
+                return Response({'match': False}, status=status.HTTP_200_OK)
+        except AttributeError:
+            return Response({'error': 'Invalid captcha_id'}, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
         """
