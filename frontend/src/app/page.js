@@ -14,7 +14,7 @@ export default function Home() {
 
     try {
 
-      const response = await fetch("/api/submit", {
+      const response = await fetch("/api/proxy-submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
