@@ -6,7 +6,7 @@ from .models import Paths, Captcha
 
 @admin.register(Captcha)
 class CaptchaAdmin(admin.ModelAdmin):
-    list_display = ['question', 'answer']
+    list_display = ['id', 'question', 'answer']
 
 
 @admin.register(Paths)
